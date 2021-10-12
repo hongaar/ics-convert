@@ -44,13 +44,13 @@ const convert = function() {
       const dateparts = line.split(".")
       date = moment(dateparts[0] + " " + process.argv[2], "D MMM YYYY").format("YYYY-MM-DD")
 
-      if (title === "GEINCASSEERD VORIG SALDO") {
-        amount = dateparts[1]
+      if (line.includes("€")) {
+        amount = dateparts.slice(1).join('')
         if (!amount) {
           const lineparts = line.split("€")
           amount = lineparts[1]
         }
-        amount = amount.replace(",", ".")
+        amount = amount.replace(".", "").replace(",", ".")
         if (amount.includes("Af")) {
           amount = amount.replace("Af", "")
           amount = "-" + amount
@@ -60,7 +60,7 @@ const convert = function() {
         output()
       }
     } else if (firstCharacter === "€") {
-      line = line.replace(",", ".")
+      line = line.replace(".", "").replace(",", ".")
       if (line.includes("Af")) {
         line = line.replace("Af", "")
         amount = "-" + line
@@ -70,13 +70,13 @@ const convert = function() {
       }
       output()
     } else if (firstCharacter) {
-      title = line
+      title = line.trim()
     }
   })
 }
 
 let ignore = 0
-const debug = true
+const debug = false
 
 rl.on("line", function(line) {
   ignore = Math.max(--ignore, 0)
@@ -89,6 +89,13 @@ rl.on("line", function(line) {
     buff = `${buff}\n${line}`
   } else if (!ignore) {
     debug && console.log("process!")
+    console.log("================================================================================")
+    console.log("INPUT")
+    console.log("================================================================================")
+    console.log(buff)
+    console.log("================================================================================")
+    console.log("OUTPUT")
+    console.log("================================================================================")
     convert()
     buff = ""
   }

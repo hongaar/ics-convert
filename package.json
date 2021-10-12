@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node convert.js"
+  },
   "dependencies": {
     "csv": "^2.0.0",
     "moment": "^2.20.1"
